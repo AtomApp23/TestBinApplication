@@ -24,12 +24,16 @@ class BinsViewModelTest : BaseTest() {
         manageResources = TestManageResources()
         // 1. initialize
         viewModel = BinsViewModel(
-            TestDispatchersList(),
+            HandleBinsResult.Base(
+                TestDispatchersList(),
+                communications,
+                BinResultMapper(communications, BinUiMapper())
+            ),
             manageResources,
             communications,
             interactor,
-            BinResultMapper(communications, BinUiMapper())
-        )
+
+            )
     }
 
     /**
