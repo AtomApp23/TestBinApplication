@@ -8,7 +8,7 @@ import ru.atomapp.testbinapplication.main.domain.BinUiMapper
 class BinResultMapperTest : BaseTest(){
 
     @Test
-    fun test_error() {
+    fun `test error`() {
         val communications = TestBinsCommunications()
         val mapper = BinResultMapper(communications, BinUiMapper())
 
@@ -18,7 +18,7 @@ class BinResultMapperTest : BaseTest(){
     }
 
     @Test
-    fun test_success_no_list() {
+    fun `test success no list`() {
         val communications = TestBinsCommunications()
         val mapper = BinResultMapper(communications, BinUiMapper())
 
@@ -30,7 +30,7 @@ class BinResultMapperTest : BaseTest(){
     }
 
     @Test
-    fun test_success_with_list() {
+    fun `test success with list`() {
         val communications = TestBinsCommunications()
         val mapper = BinResultMapper(communications, BinUiMapper())
 

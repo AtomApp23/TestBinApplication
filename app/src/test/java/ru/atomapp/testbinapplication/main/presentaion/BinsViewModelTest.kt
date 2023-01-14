@@ -43,19 +43,14 @@ class BinsViewModelTest : BaseTest() {
      * then re-init and check the result
      */
     @Test
-    fun test_init_and_re_init() = runBlocking {
-
+    fun `test init and re-init`() = runBlocking {
         interactor.changeExpectedResult(BinsResult.Success())
 
-        // 2. action
         viewModel.init(isFirstRun = true)
 
-        // 3. check
-        // показываем прогресс
         assertEquals(true, communications.progressCalledList[0])
         assertEquals(1, interactor.initCalledList.size)
 
-        // скрываем прогресс
         assertEquals(2, communications.progressCalledList.size)
         assertEquals(false, communications.progressCalledList[1])
 
@@ -65,15 +60,10 @@ class BinsViewModelTest : BaseTest() {
         assertEquals(0, communications.binsList.size)
         assertEquals(0, communications.timesShowList)
 
-        // 4. get some data re-init
         interactor.changeExpectedResult(BinsResult.Failure("no internet connection"))
         viewModel.fetchBinInfo("12345678")
-        //assertEquals(4, communications.progressCalledList.size)
+
         assertEquals(true, communications.progressCalledList[2])
-
-
-
-
 
         assertEquals(1, interactor.infoAboutBinCalledList.size)
 
@@ -96,7 +86,7 @@ class BinsViewModelTest : BaseTest() {
      * Try to get info with empty input
      */
     @Test
-    fun empty_input() = runBlocking {
+    fun `empty input`() = runBlocking {
         manageResources.makeExpectedAnswer("BIN number is empty")
         viewModel.fetchBinInfo("")
 
@@ -117,7 +107,7 @@ class BinsViewModelTest : BaseTest() {
      * Try to get info with correct bin number
      */
     @Test
-    fun correct_bin_input() = runBlocking {
+    fun `correct bin input`() = runBlocking {
         val bin = Bin("12345678", "info")
 
         interactor.changeExpectedResult(
