@@ -3,4 +3,5 @@
     <string name="check_bin">Check Bin</string>
     <string name="input_a_bin_number">Input a Bin Number</string>
     <string name="something_went_wrong">Something went wrong</string>
+    <string name="empty_bin_error_massage">Please enter a number</string>
 </resources>
