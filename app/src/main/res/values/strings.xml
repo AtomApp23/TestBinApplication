@@ -4,4 +4,6 @@
     <string name="input_a_bin_number">Input a Bin Number</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="empty_bin_error_massage">Please enter a number</string>
+    <string name="no_connection_message">No Internet Connection</string>
+    <string name="service_unavalable_message">Service is unavalable</string>
 </resources>

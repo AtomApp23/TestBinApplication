@@ -6,5 +6,22 @@ interface BinsInteractor {
 
     suspend fun infoAboutBinNumber(info: String): BinsResult
 
+    class Base(
+        private val repository: BinsRepository,
+        private val handleError: HandleError
+    ) : BinsInteractor {
 
+        override suspend fun init(): BinsResult {
+            return BinsResult.Success(repository.allBinsInfo())
+        }
+
+        override suspend fun infoAboutBinNumber(info: String): BinsResult {
+            return try {
+                repository.binInfo(info)
+                BinsResult.Success(repository.allBinsInfo())
+            } catch (e: Exception) {
+                BinsResult.Failure(handleError.handle(e))
+            }
+        }
+    }
 }

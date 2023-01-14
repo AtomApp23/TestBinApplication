@@ -4,16 +4,19 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import ru.atomapp.testbinapplication.main.presentaion.ManageResources
 
 class BinsInteractorTest {
 
     private lateinit var interactor: BinsInteractor
     private lateinit var repository: TestBinsRepository
+    private lateinit var manageResources: TestManageResources
 
     @Before
     fun setUp() {
         repository = TestBinsRepository()
-        interactor = BinsInteractor.Base(repository)
+        manageResources = TestManageResources()
+        interactor = BinsInteractor.Base(repository, HandleError.Base(manageResources))
 
     }
 
@@ -42,7 +45,8 @@ class BinsInteractorTest {
     @Test
     fun `test info about number error`() = runBlocking {
         repository.expectingErrorGetInfo(true)
-        val actual = interactor.infoAboutBinNumber("11111111")
+        manageResources.changeExpected("no internet connection")
+        val actual = interactor.infoAboutBinNumber("1111111")
         val expected = BinsResult.Failure("no internet connection")
 
         assertEquals(expected, actual)
@@ -72,16 +76,31 @@ class BinsInteractorTest {
             errorWhileBinInfo = error
         }
 
-        override fun allBinsInfo(): List<Bin> {
+        override suspend fun allBinsInfo(): List<Bin> {
             allBinsInfoCalledCount++
             return allBinsInfoList
         }
 
-        override fun binInfo(bin: String): Bin {
+        override suspend fun binInfo(bin: String): Bin {
             binInfoCalledList.add(bin)
             if(errorWhileBinInfo)
                 throw NoInternetConnectionException()
+            allBinsInfoList.add(binInfo)
             return binInfo
+        }
+
+    }
+
+    private class TestManageResources: ManageResources {
+
+        private var value = ""
+
+        fun changeExpected(string: String) {
+            value = string
+        }
+
+        override fun string(id: Int): String {
+            return  value
         }
 
     }
