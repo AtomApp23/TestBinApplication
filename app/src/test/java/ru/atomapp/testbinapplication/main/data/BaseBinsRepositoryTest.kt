@@ -19,7 +19,12 @@ class BaseBinsRepositoryTest {
     fun setUp() {
         cloudDataSource = TestBinsCloudDataSource()
         cacheDataSource = TestBinsCacheDataSource()
-        repository = BaseBinsRepository(cloudDataSource, cacheDataSource)
+        repository = BaseBinsRepository(
+            cloudDataSource,
+            cacheDataSource,
+            BinDataToDomainMapper(),
+            HandleDomainError()
+        )
     }
 
     @Test
@@ -48,7 +53,7 @@ class BaseBinsRepositoryTest {
         cacheDataSource.replaceData(emptyList())
 
         val actual = repository.binInfo("12345678")
-        val expected = BinData("12345678", "info 12345678")
+        val expected = Bin("12345678", "info 12345678")
 
         assertEquals(expected, actual)
         assertEquals(false, cacheDataSource.containsCalledList[0])
@@ -57,7 +62,7 @@ class BaseBinsRepositoryTest {
         //assertEquals("12345678", cacheDataSource.binInfoCalled[0])
         assertEquals(0, cacheDataSource.binInfoCalled.size)
         assertEquals(1, cacheDataSource.saveBinInfoCalledCount)
-        assertEquals(expected, cacheDataSource.data[0])
+        assertEquals(BinData("12345678", "info 12345678"), cacheDataSource.data[0])
     }
 
     @Test(expected = NoInternetConnectionException::class)
@@ -79,14 +84,14 @@ class BaseBinsRepositoryTest {
         cacheDataSource.replaceData(listOf(BinData("22222222", "cache info 22222222")))
 
         val actual = repository.binInfo("22222222")
-        val expected = BinData("22222222", "cache info 22222222")
+        val expected = Bin("22222222", "cache info 22222222")
 
         assertEquals(expected, actual)
         assertEquals(true, cacheDataSource.containsCalledList[0])
         assertEquals(1, cacheDataSource.containsCalledList.size)
         assertEquals(0, cloudDataSource.binInfoCAlledCount)
         assertEquals(1, cacheDataSource.binInfoCalled.size)
-        assertEquals(expected, cacheDataSource.binInfoCalled[0])
+        assertEquals("22222222", cacheDataSource.binInfoCalled[0])
         assertEquals(1, cacheDataSource.saveBinInfoCalledCount)
     }
 
@@ -133,8 +138,8 @@ class BaseBinsRepositoryTest {
             return data
         }
 
-        override fun contains(bin:String) :Boolean{
-            val result =  data.find { it.matches(bin) } != null
+        override suspend fun contains(bin: String): Boolean {
+            val result = data.find { it.map(BinData.Mapper.Matches(bin)) } != null
             containsCalledList.add(result)
             return result
         }
@@ -148,6 +153,5 @@ class BaseBinsRepositoryTest {
             saveBinInfoCalledCount++
             data.add(binData)
         }
-
     }
 }

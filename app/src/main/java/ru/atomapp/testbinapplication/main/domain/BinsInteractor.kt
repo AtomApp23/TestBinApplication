@@ -8,7 +8,7 @@ interface BinsInteractor {
 
     class Base(
         private val repository: BinsRepository,
-        private val handleError: HandleError
+        private val handleError: HandleError<String>
     ) : BinsInteractor {
 
         override suspend fun init(): BinsResult {

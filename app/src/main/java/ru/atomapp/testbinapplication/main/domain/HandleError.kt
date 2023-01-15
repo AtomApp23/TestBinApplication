@@ -3,11 +3,11 @@ package ru.atomapp.testbinapplication.main.domain
 import ru.atomapp.testbinapplication.R
 import ru.atomapp.testbinapplication.main.presentaion.ManageResources
 
-interface HandleError {
+interface HandleError<T> {
 
-    fun handle(e: Exception): String
+    fun handle(e: Exception): T
 
-    class Base(private val manageResources: ManageResources) : HandleError {
+    class Base(private val manageResources: ManageResources) : HandleError<String> {
 
         override fun handle(e: Exception): String {
             return manageResources.string(
